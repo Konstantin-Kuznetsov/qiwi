@@ -10,7 +10,15 @@ import com.google.gson.annotations.SerializedName;
 
 public class Choice {
     @SerializedName("value")
-    public String value; // константа для каждой строки списка
+    private String value; // константа для каждой строки списка
     @SerializedName("title")
-    public String title; // текстовое описание
+    private String title; // текстовое описание
+
+    public String getValue() {
+        return value;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 }
