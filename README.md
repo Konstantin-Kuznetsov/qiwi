@@ -53,9 +53,8 @@ Subscription editCardNumberSubscription =
       .map(CharSequence::toString) // текст поля, подлежащий валидации
       .observeOn(AndroidSchedulers.mainThread()) // обработка на UI потоке
       .subscribe(text -> {
-                    element.getView().setText(text);
-                    if (валидаторОК) {
-                        // --
+                    if (валидатор(text)) {
+                        // все ОК
                     } else {
                         // валидатор не ОК, какие-то действия
                     }
