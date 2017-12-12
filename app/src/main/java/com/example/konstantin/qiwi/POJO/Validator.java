@@ -10,9 +10,21 @@ import com.google.gson.annotations.SerializedName;
 
 public class Validator {
     @SerializedName("type")
-    public String type; // regex
+    private String type; // regex
     @SerializedName("predicate")
-    public Predicate predicate;
+    private Predicate predicate;
     @SerializedName("message")
-    public String message; // сообщение, если поле не валидно
+    private String message; // сообщение, если поле не валидно
+
+    public String getType() {
+        return type;
+    }
+
+    public Predicate getPredicate() {
+        return predicate;
+    }
+
+    public String getMessage() {
+        return message;
+    }
 }

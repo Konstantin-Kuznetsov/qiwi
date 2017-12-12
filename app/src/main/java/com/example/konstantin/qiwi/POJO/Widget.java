@@ -17,6 +17,8 @@ public class Widget {
     private String type; // radio/text
     @SerializedName("choices")
     private List<Choice> choices = new ArrayList<Choice>(); // список значений выпадающего списка
+    @SerializedName("keyboard")
+    private String keyboard;
 
     public String getType() {
         return type;
@@ -24,5 +26,9 @@ public class Widget {
 
     public List<Choice> getChoices() {
         return choices;
+    }
+
+    public String getKeyboard() {
+        return keyboard;
     }
 }

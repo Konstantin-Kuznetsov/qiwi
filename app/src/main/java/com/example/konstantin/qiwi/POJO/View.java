@@ -17,6 +17,8 @@ public class View {
     @SerializedName("widget")
     private Widget widget; // описание непосредственно View
 
+    private String currText; // текущий текст в поле, набранный пользователем
+
     public String getTitle() {
         return title;
     }
@@ -27,5 +29,9 @@ public class View {
 
     public Widget getWidget() {
         return widget;
+    }
+
+    public String getCurrText() {
+        return currText;
     }
 }
