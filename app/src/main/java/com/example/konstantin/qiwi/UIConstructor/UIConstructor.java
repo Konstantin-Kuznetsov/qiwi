@@ -74,6 +74,7 @@ public class UIConstructor {
 
         // editTextView.getEditText() - ссылка на отслеживаемый EditText
         // сообщение о некорректном вводе формирует TextInputLayout
+        // Вложенный элемент - TextInputEditText
 
         // Hint поля
         editTextView.getEditText().setHint(element.getView().getPrompt());
