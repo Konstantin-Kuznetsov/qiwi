@@ -8,36 +8,43 @@
 Можно использовать любой архитектурный паттерн, но для этой задачи неплохо подходит MVVM. Очень желательно разделять логику
 построения дерева и рендеринг формы.
 
-Вот что я думаю про все это...
+Предполагаемая идея решения
 ----------
+- Идея решения - разместить создаваемые View в ленте RecyclerView, а при необходимости перестроить интерфейс - изменяем в адаптере этого списка набор данных и оповещаем его, `uiConstructorAdapter.notifyDataSetChanged()`
 
-Некоторое время я думал- как это сделать лучше, искал как вообще такое делают люди, искал про MVVM и в итоге вижу два пути:
--	Если бы знать количество и тип полей заранее, т.е если бы мы знали, что на форме всегда есть поле имя, поле фамилия, спиннер c выбором типа идентификатора и т.д
+- При перестроении UI необходимо будет проходить по всем `Element` из первоначального списка из json и перепроверять видимость зависимых элементов. Например, при изменении типа авторизации с номера карты на номер телефона, нужно будет удалить из данных в адаптере все TextInputLayout, относящиеся к вводу номера карты(эти элементы являются потомками узла "тип авторизации") и добавить TextInputLayout, относящиеся к авторизации по номеру телефона. После этого можно оповестить адаптер об изменении набора данных.
 
-Если бы была теоретическая возможность сделать разметку xml этой формы валидации заранее, можно было бы вообще красиво сделать с data binding.  А из json вытаскивать regex для валидации и прочие настройки полей, вроде того, что клавиатура должна быть цифровая на вводе БИК,  текст при некорректном вводе и т.д и хранить это в ViewModel для конкретного View. В идеале на каждое View должно быть по объекту ViewModel с полями, которые мы и должны связать c настройками View в xml.
+- Адаптер, конструирующий по набору параметров элемент UI по типу элемента(текстовое поле или спиннер), использует соответствующую разметку xml. Тут будет выбор всего из двух типов.
 
-Хорошо читается, компактно и легко, вот в таком стиле:
+Тут editTextView - это TextInputLayout 
 
-	<variable
-            name="element"
-            type="com.example.konstantin.qiwi.NameViewModel" />
+```java
+// Hint поля
+        editTextView.getEditText().setHint(element.getView().getPrompt());
 
-	<EditText
-            ...
-	android:hint=="@{element.getView().getPrompt()}"
-	android:inputType="@{element.getView().getWidget().getKeyBord()}"
-	android:enabled="@{element.getVisibility()}"
-            .../>
+        // текущий набранный текст
+        editTextView.getEditText().setText(element.getView().getCurrText());
 
--	Второй вариант – рассматривать каждый json как описание одного или нескольких деревьев, каждый узел которых является блоком параметров для передачи в конструктор ViewModel. Т.е на основе всех данных можно сконструировать дерево из ViewModel, потом каждый раз при изменении чего-либо обходить потомков измененного узла и изменять состояние VM(а за ними потянется  и UI) в соответствии с логикой.
+        // клавиатура
+        if (element.getView().getWidget().getKeyboard() != null &&
+                element.getView().getWidget().getKeyboard().equals("numeric")) {
+            // цифровая клавиатура для ввода номера карты
+            editTextView.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
+        } else {
+            // обычная клавиатура
+            editTextView.getEditText().setInputType(InputType.TYPE_CLASS_TEXT);
+        }
+```
+- Рассматривать каждый json как описание одного или нескольких деревьев, каждый узел которых является блоком параметров для передачи в конструктор ViewModel. Т.е на основе всех данных можно сконструировать дерево из ViewModel, потом каждый раз при изменении чего-либо обходить потомков измененного узла и изменять состояние VM(а за ними потянется  и UI) в соответствии с логикой.
 
 В тестовом json максимальное число потомков – 2, но если абстрагироваться - нужно учитывать любое число.
 
-Лучший выход - включить здравый смысл, наложить ограничения на условия, загуглить готовые алгоритмы с деревьями и попытаться подредактировать под свои нужды.
+
 
 RxJava, RxBinding
 ----------
-Все в интернете намекает на то, что нужно почитать про RxBinding
+
+С помощью RxBinding устанавливаем слушатель на поле ввода. И на спиннер тоже слушатель по изменению выбранного пункта.
 
 https://academy.realm.io/posts/donn-felker-reactive-android-ui-programming-with-rxbinding/
 http://reactivex.io/documentation/operators/debounce.html
@@ -45,18 +52,15 @@ http://reactivex.io/documentation/operators/debounce.html
 должно получиться что-то похожее:
 
 ```java
-EditText cardNumber = (EditText) v.findViewById(R.id.cardNum);
-
-Subscription editCardNumberSubscription =
-    RxTextView.textChanges(cardNumber)
-      .debounce(500, TimeUnit.MILLISECONDS) // задержка перед обработкой строки
-      .map(CharSequence::toString) // текст поля, подлежащий валидации
-      .observeOn(AndroidSchedulers.mainThread()) // обработка на UI потоке
-      .subscribe(text -> {
-                    if (валидатор(text)) {
-                        // все ОК
-                    } else {
-                        // валидатор не ОК, какие-то действия
-                    }
+Disposable editTextWatcher = RxTextView.textChanges(editTextView.getEditText())
+                .debounce(500, TimeUnit.MILLISECONDS) // задержка 500мс перед обработкой
+                .map(CharSequence::toString)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(currText -> {
+                    if (stringValidator.isValid(currText)) {
+                        editTextView.setError(stringValidator
+                                .getValidatorInstance()
+                                .getMessage()); // установка ошибки текстовому полю
+                    } else editTextView.setError(EMPTY_STRING); // сброс ошибки
                 });
 ```
