@@ -15,6 +15,7 @@ import com.example.konstantin.qiwi.POJO.Choice;
 import com.example.konstantin.qiwi.POJO.Element;
 import com.example.konstantin.qiwi.R;
 import com.example.konstantin.qiwi.UI.CustomSpinnerAdapter;
+import com.example.konstantin.qiwi.UI.ViewHolders.SpinnerViewHolder;
 import com.example.konstantin.qiwi.Validator.StringValidator;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
@@ -63,13 +64,12 @@ public class UIConstructor {
 
 
     // в метод передается Element с описанием спиннера для конструирования
-    private void initiateSpinnerView(Element element, Spinner spinner) {
+    private void initiateSpinnerView(SpinnerViewHolder viewHolder, Element element) {
         // список элементов спиннера, передается ArrayAdapter спиннера
         List<Choice> choiceList = element.getView().getWidget().getChoices();
 
         // установка кастомизированного адаптера для спиннера
-        CustomSpinnerAdapter adapter  =  new CustomSpinnerAdapter(
-                this, R.layout.spinner_dropdown_item, choiceList);
+        CustomSpinnerAdapter adapter  =  new CustomSpinnerAdapter(viewHolder...context, R.layout.spinner_dropdown_item, choiceList);
 
         // SpinnerAdapter spinnerAdapter = TODO: доделать конфигуратор адаптера
         // spinner.setAdapter(spinnerAdapter);
