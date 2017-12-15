@@ -48,7 +48,6 @@ public class DataResolver {
             listObservable = Observable.just(parseJSON(jsonString))
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread());
-                    //.subscribe(observer);
             //
         } catch (IOException io) {
             Log.e(TAG, "Ошибка ввода/вывода ", io);

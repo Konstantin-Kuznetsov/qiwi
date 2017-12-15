@@ -6,12 +6,15 @@ import android.text.Editable;
 import android.text.InputType;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 import com.example.konstantin.qiwi.POJO.Choice;
 import com.example.konstantin.qiwi.POJO.Element;
+import com.example.konstantin.qiwi.R;
+import com.example.konstantin.qiwi.UI.CustomSpinnerAdapter;
 import com.example.konstantin.qiwi.Validator.StringValidator;
 import com.jakewharton.rxbinding2.widget.RxTextView;
 
@@ -39,7 +42,7 @@ public class UIConstructor {
     private List<Element> visibleElements = new ArrayList<>();
 
     // Map<regex, validator>
-    private Map<String, StringValidator> validatorsCache = new HashMap<>();
+    private Map<String, StringValidator> validatorsMap = new HashMap<>();
 
     private Set<String> namesOfElements = new HashSet<>();
 
@@ -61,8 +64,12 @@ public class UIConstructor {
 
     // в метод передается Element с описанием спиннера для конструирования
     private void initiateSpinnerView(Element element, Spinner spinner) {
-        // список элементов спиннера, передается адаптеру спиннера
+        // список элементов спиннера, передается ArrayAdapter спиннера
         List<Choice> choiceList = element.getView().getWidget().getChoices();
+
+        // установка кастомизированного адаптера для спиннера
+        CustomSpinnerAdapter adapter  =  new CustomSpinnerAdapter(
+                this, R.layout.spinner_dropdown_item, choiceList);
 
         // SpinnerAdapter spinnerAdapter = TODO: доделать конфигуратор адаптера
         // spinner.setAdapter(spinnerAdapter);

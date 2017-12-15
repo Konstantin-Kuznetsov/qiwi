@@ -21,4 +21,10 @@ public class Choice {
     public String getTitle() {
         return title;
     }
+
+    // для отображения в выпадающем списке адаптером в виде корректной строки
+    @Override
+    public String toString() {
+        return getTitle();
+    }
 }
