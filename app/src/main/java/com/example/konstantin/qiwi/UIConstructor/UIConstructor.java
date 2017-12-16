@@ -1,5 +1,6 @@
 package com.example.konstantin.qiwi.UIConstructor;
 
+import android.os.Handler;
 import android.support.design.widget.TextInputLayout;
 import android.text.InputType;
 
@@ -8,6 +9,7 @@ import com.example.konstantin.qiwi.POJO.Element;
 import com.example.konstantin.qiwi.POJO.Validator;
 import com.example.konstantin.qiwi.R;
 import com.example.konstantin.qiwi.UI.CustomSpinnerAdapter;
+import com.example.konstantin.qiwi.UI.ViewHolders.OnSpinnerItemClick;
 import com.example.konstantin.qiwi.UI.ViewHolders.SpinnerViewHolder;
 import com.example.konstantin.qiwi.Validator.StringValidator;
 import com.jakewharton.rxbinding2.widget.RxAdapterView;
@@ -22,6 +24,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -69,6 +74,23 @@ public class UIConstructor {
         CustomSpinnerAdapter spinnerAdapter  =  new CustomSpinnerAdapter(viewHolder.itemView.getContext(), R.layout.spinner_dropdown_item, choiceList);
         viewHolder.getSpinnerView().setAdapter(spinnerAdapter);
 
+        // Устанавливаем на адаптер слушатель. Выбираем пункт меню по умолчанию
+        Disposable spinnerClickDisposable = Observable.create(e -> {
+            OnSpinnerItemClick listener = e::onNext;
+            spinnerAdapter.setClickListener(listener);
+        })
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(integer -> {
+                    insertChilds(choiceList.get((Integer) integer).getValue(),
+                            element.getName(),
+                            allElements);
+                    new Handler().post(() -> viewHolder.getSpinnerView().setSelection((Integer) integer));
+                });
+
+        // добавление в пул подписок
+        compositeDisposable.add(spinnerClickDisposable);
+
+
         // Используя механизм RxBindings подписываемся на выбор элемента спиннера
         Disposable elementSelectedListener = RxAdapterView.itemSelections(viewHolder.getSpinnerView())
                 .subscribeOn(AndroidSchedulers.mainThread())
@@ -86,9 +108,8 @@ public class UIConstructor {
 
         // добавление в пул подписок
         compositeDisposable.add(elementSelectedListener);
-
-
     }
+
     private void initiateEditTextView(Element element, StringValidator stringValidator, TextInputLayout editTextView) {
 
         // editTextView.getEditText() - ссылка на отслеживаемый EditText
@@ -172,7 +193,7 @@ public class UIConstructor {
             }
         }
         // обновление набора данныз адаптера RecyclerView для отображения добавленных элементов
-        notifyDataSetChanged();
+        notifyDataSetChanged(); // TODO: перенести часть методов в ItemsRecyclerAdapter
     }
 
 }

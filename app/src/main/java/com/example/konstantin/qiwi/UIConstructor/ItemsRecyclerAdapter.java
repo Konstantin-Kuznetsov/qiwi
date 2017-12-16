@@ -6,7 +6,7 @@ import android.view.ViewGroup;
 import java.util.List;
 
 /**
- *  RecyclerView, содержащий сгенерированные View
+ *  адаптер RecyclerView, содержащего сгенерированные View
  *
  * Created by Konstantin on 12.12.2017.
  */
@@ -14,6 +14,8 @@ import java.util.List;
 public class ItemsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     public static final String TAG = "qiwi_test_task";
+
+
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
