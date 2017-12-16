@@ -16,6 +16,10 @@ public class Validator {
     @SerializedName("message")
     private String message; // сообщение, если поле не валидно
 
+    public Validator(Predicate predicate) {
+        this.predicate = predicate;
+    }
+
     public String getType() {
         return type;
     }

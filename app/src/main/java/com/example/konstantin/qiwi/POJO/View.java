@@ -34,4 +34,8 @@ public class View {
     public String getCurrText() {
         return currText;
     }
+
+    public void setCurrText(String currText) {
+        this.currText = currText;
+    }
 }

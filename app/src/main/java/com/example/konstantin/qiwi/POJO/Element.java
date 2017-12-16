@@ -23,6 +23,12 @@ public class Element {
     @SerializedName("condition")
     private Condition condition;
 
+    private Content content;
+
+    // имя родительского элемента в дереве элементов UI.
+    // используется при рекурсивном обходе дерева для идентификации
+    private String parent;
+
     public String getType() {
         return type;
     }
@@ -45,5 +51,17 @@ public class Element {
 
     public Condition getCondition() {
         return condition;
+    }
+
+    public String getParent() {
+        return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
+    }
+
+    public Content getContent() {
+        return content;
     }
 }
