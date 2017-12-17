@@ -193,7 +193,7 @@ public class UIConstructor {
             }
         }
         // обновление набора данныз адаптера RecyclerView для отображения добавленных элементов
-        notifyDataSetChanged(); // TODO: перенести часть методов в ItemsRecyclerAdapter
+        //notifyDataSetChanged(); // TODO: перенести часть методов в ItemsRecyclerAdapter
     }
 
 }

@@ -36,24 +36,28 @@ public class DataResolver {
     // список ВСЕХ элементов(описание View) из переданного json
     private List<Element> allElements = new ArrayList<>();
 
-    public Observable<List<Element>> getData() {
-
-        Observable<List<Element>> listObservable;
-
-        try {
-            String jsonString = new String(getUrlBytes(QIWI_URL));
-
-            // преобразование JSON -> POJO и обертка в Observable
-
-            listObservable = Observable.just(parseJSON(jsonString))
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread());
-            //
-        } catch (IOException io) {
-            Log.e(TAG, "Ошибка ввода/вывода ", io);
-        }
-
+    public DataResolver() {
+        //---
     }
+
+//    public Observable<List<Element>> getData() {
+//
+//        Observable<List<Element>> listObservable;
+//
+//        try {
+//            String jsonString = new String(getUrlBytes(QIWI_URL));
+//
+//            // преобразование JSON -> POJO и обертка в Observable
+//
+//            listObservable = Observable.just(parseJSON(jsonString))
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(AndroidSchedulers.mainThread());
+//            //
+//        } catch (IOException io) {
+//            Log.e(TAG, "Ошибка ввода/вывода ", io);
+//        }
+//
+//    }
 
     private byte[] getUrlBytes(String url) throws IOException {
 
