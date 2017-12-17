@@ -2,7 +2,7 @@ package com.example.konstantin.qiwi.Dagger;
 
 import android.support.annotation.NonNull;
 
-import com.example.konstantin.qiwi.Model.DataResolver;
+import com.example.konstantin.qiwi.Model.DataManager;
 
 import javax.inject.Singleton;
 
@@ -18,7 +18,7 @@ public class DataProvidersModule {
     @Provides
     @NonNull
     @Singleton
-    public DataResolver provideDataResolver() {
-        return new DataResolver();
+    public DataManager provideDataResolver() {
+        return new DataManager();
     }
 }

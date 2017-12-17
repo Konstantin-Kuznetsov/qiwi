@@ -9,12 +9,7 @@ import com.example.konstantin.qiwi.POJO.Element;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +19,13 @@ import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
+
 
 /**
  *  Получает данные от сервера и возвращает в виде Observable презентеру
@@ -31,33 +33,90 @@ import io.reactivex.schedulers.Schedulers;
  * Created by Konstantin on 13.12.2017.
  */
 
-public class DataResolver {
+public class DataManager {
 
     @Inject Context context;
-    @Inject Gson gson;
     @Inject QiwiBackend.QiwiInterface api;
+    @Inject Gson gson;
 
     private static final String TAG = "qiwi_test_task";
 
-    public DataResolver() {
+    OkHttpClient client;
+
+    public DataManager() {
         DependencyInjector.getComponent().inject(this);
+        client = new OkHttpClient();
     }
 
     // подписка переданного Observer на данные с сервера
     public void getFormData(Observer<List<Element>> formDataObserver) {
-        getElementsObservable().subscribe(formDataObserver);
+        try {
+            getElementsObservable()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(formDataObserver);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public Observable<List<Element>> getElementsObservable() {
 
-        Observable<Content> newsListObservable = api.getFormStructure();
+    private Observable<List<Element>> getElementsObservable() throws IOException {
+        String response = downloadFile("https://w.qiwi.com/mobile/form/form.json");
 
-        Observable<List<Element>> elementsListObservable = newsListObservable
-                .map(Content::getElements)
-                .skip(1); // пропуск первого Element со служебной информацией
-
-        return elementsListObservable;
+        return Observable.just(parseJSON(response));
     }
+
+
+    private String downloadFile(String urlToDownload) throws IOException {
+
+        Request request = new Request.Builder()
+                .url(urlToDownload)
+                .build();
+
+        return client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+            }
+        });
+
+    }
+
+
+
+    private List<Element> parseJSON(String jsonString) {
+
+        List<Element> allElements = new ArrayList<>();
+
+        //gson = new GsonBuilder().create();
+        Content content = gson.fromJson(jsonString, Content.class);
+
+        // добавляем к списку все элементы кроме первого служебного
+        allElements.addAll(content.getElements());
+        allElements.remove(0);
+
+        return allElements;
+    }
+
+
+//    private Observable<Content> getElementsObservable() {
+//
+//        Observable<Content> contentObservable = api.getFormStructure();
+//
+//        //Observable<List<Element>> elementsListObservable = contentObservable
+//                //.concatMapIterable(Content::getElements)
+//                //.map(Content::getElements);
+//                //.skip(1); // пропуск первого Element со служебной информацией
+//
+//        //return elementsListObservable;
+//        return contentObservable;
+//    }
 
 
     //private Content content; // содержимое json

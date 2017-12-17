@@ -1,6 +1,6 @@
 package com.example.konstantin.qiwi.Dagger;
 
-import com.example.konstantin.qiwi.Model.DataResolver;
+import com.example.konstantin.qiwi.Model.DataManager;
 import com.example.konstantin.qiwi.Presenter.FormFragmentPresenter;
 import com.example.konstantin.qiwi.UI.FormFragment;
 
@@ -16,12 +16,9 @@ import dagger.Component;
 @Component(modules = {AppModule.class, DataProvidersModule.class, PresentersModule.class, UtilsModule.class})
 public interface AppComponent  {
 
-    void inject(DataResolver dataResolver);
+    void inject(FormFragment formFragment);
 
     void inject(FormFragmentPresenter formFragmentPresenter);
 
-    void inject(FormFragment formFragment);
-
-
-
+    void inject(DataManager dataManager);
 }
