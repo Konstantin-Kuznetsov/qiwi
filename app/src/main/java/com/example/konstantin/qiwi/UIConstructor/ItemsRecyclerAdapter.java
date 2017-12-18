@@ -94,6 +94,8 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
                 StringValidator validator = validatorsMap.get(element.getValidator().getPredicate().getPattern());
                 if (validator == null) {
                     validator = new StringValidator(element.getValidator());
+                    // добавляем вновь созданный
+                    validatorsMap.put(element.getValidator().getPredicate().getPattern() ,validator);
                 }
 
                 if (holder.getItemViewType() == EDITTEXT_ITEM) {
@@ -210,7 +212,9 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
                 .map(CharSequence::toString)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(currText -> {
-                    if (stringValidator.isValid(currText)) {
+                    // проверка на пустое поле - чтобы ошибка не светилась сразу при показе формы
+                    // если текст есть и не проходит валидацию - устанавливаем ошибку
+                    if (!currText.equals(EMPTY_STRING) &&!stringValidator.isValid(currText)) {
                         viewHolder.getTextInputLayout().setError(stringValidator
                                 .getValidatorInstance()
                                 .getMessage()); // установка ошибки текстовому полю
