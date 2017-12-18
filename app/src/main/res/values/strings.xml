@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">QIWI</string>
-    <string name="onSubscribe_UIData"><![CDATA[Observer<List<Element>> метод onSubscribe(Disposable d) вызван]]></string>
-    <string name="onNext_UIData"><![CDATA[Observer<List<Element>> метод onNext(List<Element> elements) вызван]]></string>
+    <string name="onSubscribe_UIData"><![CDATA[onSubscribe(Disposable d). Подписка на данные для UI]]></string>
+    <string name="onNext_UIData"><![CDATA[onNext вызван, данные для построения UI успешно получены]]></string>
     <string name="onComplete_UIData"><![CDATA[Observer<List<Element>> метод onComplete() вызван]]></string>
+    <string name="file_loader_bad">Ошибка загрузки данных с сервера.</string>
+    <string name="file_loader_ok">Данные с сервера успешно загружены.</string>
 </resources>

@@ -2,14 +2,12 @@ package com.example.konstantin.qiwi.Presenter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 
 import com.example.konstantin.qiwi.Dagger.DependencyInjector;
 import com.example.konstantin.qiwi.Model.DataManager;
-import com.example.konstantin.qiwi.POJO.Content;
 import com.example.konstantin.qiwi.POJO.Element;
 import com.example.konstantin.qiwi.R;
 import com.example.konstantin.qiwi.UI.FormFragment;
@@ -21,7 +19,6 @@ import javax.inject.Inject;
 
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
-import okhttp3.ResponseBody;
 
 /**
  *  Презентер для фрагмента с формой.
@@ -82,8 +79,6 @@ public class FormFragmentPresenter {
 
                     // TODO: формируем и отображаем UI в RecyclerView
                     Log.i(TAG, context.getString(R.string.onNext_UIData));
-
-                    test = elements;
                 }
             }
 
