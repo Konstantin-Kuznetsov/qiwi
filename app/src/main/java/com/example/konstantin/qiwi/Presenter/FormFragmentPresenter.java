@@ -2,6 +2,7 @@ package com.example.konstantin.qiwi.Presenter;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +12,7 @@ import com.example.konstantin.qiwi.Model.DataManager;
 import com.example.konstantin.qiwi.POJO.Element;
 import com.example.konstantin.qiwi.R;
 import com.example.konstantin.qiwi.UI.FormFragment;
+import com.example.konstantin.qiwi.UIConstructor.ItemsRecyclerAdapter;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -79,6 +81,15 @@ public class FormFragmentPresenter {
 
                     // TODO: формируем и отображаем UI в RecyclerView
                     Log.i(TAG, context.getString(R.string.onNext_UIData));
+
+                    // инициализация адаптера и установка для RecyclerView
+                    recyclerForm.setLayoutManager(new LinearLayoutManager(context));
+
+                    ItemsRecyclerAdapter adapter = new ItemsRecyclerAdapter();
+
+                    recyclerForm.setAdapter(adapter);
+
+                    adapter.initiateItems(elements);
                 }
             }
 

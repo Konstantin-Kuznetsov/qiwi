@@ -23,7 +23,6 @@ public class FormFragment extends Fragment {
 
     @Inject FormFragmentPresenter presenter;
 
-    //private final String TAG = "qiwi_form_validator";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
