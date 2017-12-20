@@ -55,4 +55,10 @@ public class FormFragment extends Fragment {
         super.onPause();
         presenter.detachView();
     }
+
+    @Override
+    public void onDestroy() {
+        presenter.clearCompositeDisposable();
+        super.onDestroy();
+    }
 }

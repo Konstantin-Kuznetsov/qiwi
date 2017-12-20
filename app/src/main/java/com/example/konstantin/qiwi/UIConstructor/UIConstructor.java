@@ -153,4 +153,10 @@ public class UIConstructor {
         compositeDisposable.add(elementSelectedListener);
     }
 
+    public  void clearCompositeDisposable() {
+        if (compositeDisposable != null && !compositeDisposable.isDisposed()) {
+            compositeDisposable.dispose();
+        }
+    }
+
 }

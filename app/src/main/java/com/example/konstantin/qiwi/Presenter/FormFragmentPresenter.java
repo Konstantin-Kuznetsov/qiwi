@@ -37,8 +37,7 @@ public class FormFragmentPresenter {
     private final String TAG = "qiwi_test_task";
 
     private RecyclerView recyclerForm;
-
-    private List<Element> test; // тест как распарсится
+    private ItemsRecyclerAdapter adapter;
 
     public FormFragmentPresenter() {
         DependencyInjector.getComponent().inject(this);
@@ -85,7 +84,7 @@ public class FormFragmentPresenter {
                     // инициализация адаптера и установка для RecyclerView
                     recyclerForm.setLayoutManager(new LinearLayoutManager(context));
 
-                    ItemsRecyclerAdapter adapter = new ItemsRecyclerAdapter();
+                    adapter = new ItemsRecyclerAdapter();
 
                     recyclerForm.setAdapter(adapter);
 
@@ -112,5 +111,9 @@ public class FormFragmentPresenter {
                 Log.i(TAG, context.getString(R.string.onComplete_UIData));
             }
         };
+    }
+
+    public void clearCompositeDisposable() {
+        adapter.getUiConstructor().clearCompositeDisposable();
     }
 }

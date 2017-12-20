@@ -101,4 +101,8 @@ public class ItemsRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             return EDITTEXT_ITEM;
         }
     }
+
+    public UIConstructor getUiConstructor() {
+        return uiConstructor;
+    }
 }
